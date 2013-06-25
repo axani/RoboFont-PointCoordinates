@@ -1,22 +1,27 @@
 from mojo.events import addObserver
 from mojo.roboFont import *
+from mojo.drawingTools import *
 import math
 
-class pointCoordinates:
+class pointCoordinates(object):
     
     def __init__(self):
-        addObserver(self, 'output', 'mouseUp')
+        addObserver(self, 'output', 'draw')
         #addObserver(self, 'output', 'keyUp')
 
-    def output(self, info):    
+    def output(self, info):
+
+        scale = info["scale"]
+           
         c = CurrentGlyph()
 
         for contour in c:
-            print '--------'   
+            #print '--------'   
             listOfAllPoints = contour.points
             onCurvePoints = self.returnOnCurvePoints(listOfAllPoints)
             bPoints = contour.bPoints
 
+            i = 0
             for point in onCurvePoints:
                 pointIndex = onCurvePoints.index(point)
                 bpoint = bPoints[pointIndex]
@@ -25,8 +30,15 @@ class pointCoordinates:
                     h_in = bpoint.bcpIn
                     h_out = bpoint.bcpOut
                     # self.printCoordinates(h_in, anchor, h_out)
-                    self.printDistances(h_in, anchor, h_out)
+                    fill(0, 0, 0)
+                    stroke(0)
+                    fontSize(25/scale)
+                    text(self.printDistances(h_in, anchor, h_out), (0, i))
+                    i -= 40/scale 
+                    
     
+        
+
     def returnOnCurvePoints(self, list):
         onCurvePoints = []
         for point in list:
@@ -51,17 +63,17 @@ class pointCoordinates:
         anchorType = isPointOnLine(slope, intercept, anchor)
 
         if dist_in != 0.0:
-            dist_in_str = '\t' + str(dist_in) + '\t\t'
+            dist_in_str = '\t' + str(dist_in) + '\t'
         else:
-            dist_in_str = '\t\t\t\t'
+            dist_in_str = '\t'
 
 
         if dist_out != 0.0:
-            dist_out_str = '\t\t' + str(dist_out) + '\t\t'
+            dist_out_str = '\t' + str(dist_out) + '\t'
         else:
-            dist_out_str = '\t\t\t'
+            dist_out_str = ''
 
-        print str(anchor) + '\t%s(%s)%s' % (dist_in_str, anchorType, dist_out_str)
+        return str(anchor) + '\t%s(%s)%s' % (dist_in_str, anchorType, dist_out_str)
 
     def createStrings(self, h_in, anchor, h_out):
         if str(h_in) != '(0, 0)':
