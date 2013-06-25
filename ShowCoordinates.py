@@ -5,9 +5,11 @@ import math
 class pointCoordinates:
     
     def __init__(self):
-        
-        c = CurrentGlyph()
+        addObserver(self, 'output', 'mouseUp')
+        #addObserver(self, 'output', 'keyUp')
 
+    def output(self, info):    
+        c = CurrentGlyph()
 
         for contour in c:
             print '--------'   
@@ -88,7 +90,7 @@ def calcSlopeAndIntersect(point1, point2):
 def isPointOnLine(slope, intercept, pointToCheck):
     if slope != 0 and intercept != 0:
         if pointToCheck[1] - (slope * pointToCheck[0] + intercept) < 0.3:
-            return '°'
+            return '-'
         else:
             return '^'
     else:
